@@ -11,11 +11,15 @@ RUN pip install --upgrade pip && \
 RUN git clone https://github.com/turboderp/exllama
 RUN pip install -r exllama/requirements.txt
 
+ENV MODEL_REPO="TheBloke/Llama-2-13B-chat-GPTQ"
+
+# Download the model during Docker build
+RUN python -c "import os; from huggingface_hub import snapshot_download; snapshot_download(repo_id=os.environ['MODEL_REPO'], revision=os.environ.get('MODEL_REVISION', 'main'))"
+
 COPY handler.py /data/handler.py
 COPY __init.py__ /data/__init__.py
 
 ENV PYTHONPATH=/data/exllama
-ENV MODEL_REPO=""
 ENV PROMPT_PREFIX=""
 ENV PROMPT_SUFFIX=""
 ENV HUGGINGFACE_HUB_CACHE="/runpod-volume/huggingface-cache/hub"
