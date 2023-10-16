@@ -32,7 +32,7 @@ def load_model():
     global generator, default_settings
 
     if not generator:
-        model_directory = "/data" # As the model is downloaded in /data in Dockerfile
+        model_directory = os.environ["MODEL_DIR"]
         tokenizer_path = os.path.join(model_directory, "tokenizer.model")
         model_config_path = os.path.join(model_directory, "config.json")
         st_pattern = os.path.join(model_directory, "*.safetensors")
@@ -40,6 +40,8 @@ def load_model():
         if not st_files:
             raise ValueError(f"No safetensors files found in {model_directory}")
         model_path = st_files[0]
+        print("Model successfully found")
+        print(f"Loading model from {model_path}")
 
         # Create config, model, tokenizer and generator
         config = ExLlamaConfig(model_config_path)               # create config from config.json
